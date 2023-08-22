@@ -1,12 +1,46 @@
+function generateUUID() {
+  let uuid = '';
+  const hexDigits = '0123456789abcdef';
+
+  for (let i = 0; i < 36; i++) {
+    if (i === 8 || i === 13 || i === 18 || i === 23) {
+      uuid += '-';
+    } else if (i === 14) {
+      uuid += '4';
+    } else {
+      uuid += hexDigits[Math.floor(Math.random() * 16)];
+    }
+  }
+
+  return uuid;
+}
+
+function tryParse(jsonString) {
+  try {
+    return JSON.parse(jsonString);
+  } catch (e) {
+    return null;
+  }
+}
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
+export const ueFDOrQS = (request) => isEmpty(request.queryString) ? request.urlEncodedFormData : request.queryString || {};
+
 // Get All the Requestsin Array Format. In each request Object put first their names, then url, then body, then short response
 export const getAllRequests = (har) => {
   return har.log.entries.map(e => {
     const request = cleanRequest(e.request);
-    const response = e.response;
+    const response = e?.response;
     const url = request.url;
-    // const body = request.postData?.text;
+    const uuid = generateUUID();
+    const body = tryParse(response?.content?.text || '{}');
+    // console.log('body', body)
     // const shortResponse = response.content?.text?.slice(0, 100);
-    return { url, ...request };
+
+    const requestPayload = ueFDOrQS(request);
+
+    return { url, uuid, ...request, body, response, request: requestPayload };
   });
 }
 
@@ -23,13 +57,14 @@ const cleanRequest = (request) => {
   const queryString = cleanQueryStringFromRequest(request.queryString);
   const urlEncodedFormData = cleanurlEncodedFormData(request.postData);
   return {
-    // headers,
+    headers,
     method,
     ...((queryString) ? { queryString } : {}),
     ...(urlEncodedFormData ? { urlEncodedFormData } : {}),
     ...(formData ? { formData } : {}),
     ['Content-Type']: headers['Content-Type'],
     url,
+    response: request.response,
   };
 }
 
