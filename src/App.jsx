@@ -56,29 +56,43 @@ export default function App() {
     setMatches(findMatches(v1_requests, v2_requests, matchTargets));
   }, [v1_requests, v2_requests, matchTargets]);
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const onPasteClick = () => {
+  const onLogoClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
-  }
 
   return (
     <div className="text-white flex flex-col h-screen">
-      <div className="bg-gray-800 py-4 px-6">
+      {/* <div className="bg-gray-800 py-4 px-6">
         <h1 className="text-2xl font-bold">
           <div class="flex items-center">
-            <img src="/HARDET2.svg" alt="HARDET2_step3 logo" class="h-14 w-14 mr-2" /> 
+            <img src="/HARDET2.svg" alt="HARDET2_step3 logo" class="h-12 w-12 mr-2" />
           </div>
         </h1>
         <div className="flex">
         </div>
-      </div>
+      </div> */}
       <div className="flex-1 flex flex-row">
-        <div className="bg-gray-800 w-1/5 p-4">
-          <FormControl>
+
+        <div className={`bg-gray-800 ${isMenuOpen ? 'w-1/5' : 'w-4'} p-4 relative`} >
+          <div class="flex justify-center items-center mt-8 mb-8" onClick={onLogoClick}>
+            <button
+              className="absolute top-0 right-3 mt-2 mr-4 text-gray-400 hover:text-white focus:outline-none"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current text-gray-400 hover:text-white focus:outline-none absolute" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" />
+              </svg>
+            </button>
+            {isMenuOpen && <img src="/HARDET2.svg" alt="HARDET2_step3 logo" class="h-16 w-16 mr-2" />}
+          </div>
+          {isMenuOpen && <><FormControl>
             <FormLabel>Request Match Criterea</FormLabel>
             <Input type='text' onChange={(e) => setMatchTargets(e.target.value.split(', '))} value={matchTargets.join(', ')} />
             <FormHelperText>Match Request Payloads</FormHelperText>
-          </FormControl>
+          </FormControl></>}
         </div>
         <div className="bg-gray-700 w-1/2 p-4">
           {HAR_Inspector({
@@ -105,10 +119,13 @@ export default function App() {
           })}
         </div>
       </div>
-      <footer className="bg-gray-800 px-6">
+      <footer className="bg-gray-800 px-6 py-2">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-sm">
-            <p>Version 1.0.0</p>
+            {/* <p>Version 1.0.0</p> */}
+          </div>
+          <div className="text-sm">
+            <p>By <a href="https://nomanhasan.github.io" className="text-blue-500 hover:text-blue-700">Noman Hasan</a></p>
           </div>
         </div>
       </footer>
