@@ -64,7 +64,11 @@ export default function App() {
   return (
     <div className="text-white flex flex-col h-screen">
       <div className="bg-gray-800 py-4 px-6">
-        <h1 className="text-2xl font-bold">My App</h1>
+        <h1 className="text-2xl font-bold">
+          <div class="flex items-center">
+            <img src="/HARDET2.svg" alt="HARDET2_step3 logo" class="h-14 w-14 mr-2" /> 
+          </div>
+        </h1>
         <div className="flex">
         </div>
       </div>
