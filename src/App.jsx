@@ -57,7 +57,9 @@ export default function App() {
   }, [v1_requests, v2_requests, matchTargets]);
 
 
+  const onPasteClick = () => {
 
+  }
 
   return (
     <div className="text-white flex flex-col h-screen">
@@ -75,10 +77,28 @@ export default function App() {
           </FormControl>
         </div>
         <div className="bg-gray-700 w-1/2 p-4">
-          {HAR_Inspector({ title: 'First HAR', handleEditorChange: handleFirstEditorChange, value: firstCode, startingCode, requests: v1_requests, matches, matchTargets })}
+          {HAR_Inspector({
+            title: 'First HAR', handleEditorChange: handleFirstEditorChange, value: firstCode, startingCode, requests: v1_requests, matches, matchTargets, onPasteClick: async () => {
+              try {
+                const text = await navigator.clipboard.readText();
+                setFirstCode(text);
+              } catch (err) {
+                console.error('Failed to read clipboard text: ', err);
+              }
+            }
+          })}
         </div>
         <div className="bg-gray-600 w-1/2 p-4">
-          {HAR_Inspector({ title: 'Second HAR', handleEditorChange: handleSecondEditorChange, value: secondCode, startingCode, requests: v2_requests, matches, matchTargets })}
+          {HAR_Inspector({
+            title: 'Second HAR', handleEditorChange: handleSecondEditorChange, value: secondCode, startingCode, requests: v2_requests, matches, matchTargets, onPasteClick: async () => {
+              try {
+                const text = await navigator.clipboard.readText();
+                setSecondCode(text);
+              } catch (err) {
+                console.error('Failed to read clipboard text: ', err);
+              }
+            }
+          })}
         </div>
       </div>
       <footer className="bg-gray-800 px-6">
@@ -92,7 +112,7 @@ export default function App() {
   );
 }
 
-function HAR_Inspector({ title, handleEditorChange, value, startingCode, requests, matches, matchTargets }) {
+function HAR_Inspector({ title, handleEditorChange, value, startingCode, requests, matches, matchTargets, onPasteClick }) {
   console.log(requests);
   const paths = getCommonAndUniqueStrings(requests.map(request => new URL(request.url).pathname));
   return <div className="flex flex-col">
@@ -137,10 +157,10 @@ function HAR_Inspector({ title, handleEditorChange, value, startingCode, request
       </Accordion>
     </div>
     <div className=" p-4 py-2">
-      
-<button class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded flex items-center">
-{PasteIcon()} <span className='mx-1'>Paste HAR</span>
-</button>
+
+      <button class="h-7 text-sm bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded flex items-center" onClick={e => onPasteClick()} >
+        {PasteIcon()} <span className='mx-1'>Paste HAR</span>
+      </button>
     </div>
     <div className=" p-4 py-2">
       <h2 className="px-4 text-lg font-bold">Inspection</h2>
